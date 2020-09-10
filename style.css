@@ -59,11 +59,18 @@ table {
   background: transparent url("image/player.png") center / cover no-repeat;
 }
 
+.game {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-self: center;
+}
+
 .gamearea {
   width: 300px;
   height: 100%;
+  margin: auto auto 0 auto;
   position: relative;
-  margin: auto;
   background: #222;
   overflow: hidden;
 }
@@ -72,7 +79,6 @@ table {
   position: absolute;
   left: 145px;
   width: 10px;
-  height: 50px;
   background: #fff;
 }
 
@@ -82,7 +88,7 @@ table {
   top: 0;
   width: 100%;
   margin: 0;
-  padding: 2rem 0;
+  padding: 2.3rem 0;
   text-align: center;
   z-index: 200;
   color: #fff;
@@ -99,7 +105,7 @@ table {
   top: 0;
   width: 100%;
   margin: 0;
-  padding: 1rem 0;
+  padding: 2.3rem 0;
   text-align: center;
   z-index: 200;
   color: #fff;
