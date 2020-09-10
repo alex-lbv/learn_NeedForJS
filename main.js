@@ -1,7 +1,11 @@
 const score = document.querySelector('.score'),
   start = document.querySelector('.start'),
   gameArea = document.querySelector('.gamearea'),
-  car = document.createElement('div');
+  car = document.createElement('div'),
+  audio = document.createElement('audio');
+
+audio.src = 'music.mp3';
+audio.style.cssText = 'position:absolute; top: -1000px;'
 
 car.classList.add('car');
 
@@ -62,6 +66,7 @@ function startGame() {
 
 function playGame() {
   if (setting.start) {
+    audio.play();
     setting.score += setting.speed;
     score.innerHTML = 'SCORE<br>' + setting.score;
     moveRoad();
@@ -82,6 +87,7 @@ function playGame() {
     if (keys.ArrowUp && setting.y > 0) {
       setting.y -= setting.speed;
     }
+
 
     car.style.left = setting.x + 'px';
     car.style.top = setting.y + 'px';
