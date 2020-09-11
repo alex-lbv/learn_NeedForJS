@@ -1,0 +1,19 @@
+{
+  "name": "NeedForJS",
+  "version": "1.0.0",
+  "author": "Godjo",
+  "main": "script.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "git@github.com:godjo/NeedForJS.git",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^10.1.1",
+    "path": "^0.12.7",
+    "url": "^0.11.0"
+  },
+  "dependencies": {
+    "electron-packager": "^15.1.0"
+  }
+}
