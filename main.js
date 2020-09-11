@@ -6,17 +6,17 @@ const score = document.querySelector('.score'),
   gameArea = document.querySelector('.gamearea'),
   car = document.createElement('div'),
   audio = document.createElement('audio'),
-  bam = document.createElement('audio');
+  bam = document.createElement('audio'),
+  topScore = document.querySelector('.top-score');
 
 audio.src = 'music.mp3';
 audio.style.cssText = 'position:absolute; top: -1000px;';
 bam.src = 'bam.mp3';
 bam.style.cssText = 'position:absolute; top: -1000px;';
 
-
 car.classList.add('car');
 
-const countSection = Math.floor(document.documentElement.clientHeight / HEIGHT_ELEM)
+const countSection = Math.floor(document.documentElement.clientHeight / HEIGHT_ELEM);
 
 gameArea.style.height = countSection * HEIGHT_ELEM;
 
@@ -34,8 +34,21 @@ const keys = {
 const setting = {
   start: false,
   score: 0,
-  speed: 7,
-  traffic: 3
+  speed: 3,
+  traffic: 2,
+  level: 0
+};
+
+let level = setting.level;
+
+const result = parseInt(localStorage.getItem('nfjs_score', setting.score));
+
+topScore.textContent = result ? result : 0;
+
+const addLocalStorage = () => {
+  if (result < setting.score) {
+    topScore.textContent = setting.score;
+  }
 };
 
 function getQuantityElements(heightElement) {
@@ -43,6 +56,30 @@ function getQuantityElements(heightElement) {
 }
 
 function startGame() {
+
+  const target = event.target;
+
+  if (target === start) {
+    return;
+  }
+
+  switch (target.id) {
+    case 'easy':
+      setting.speed = 3;
+      setting.traffic = 4;
+      break;
+
+    case 'medium':
+      setting.speed = 5;
+      setting.traffic = 3;
+      break;
+
+    case 'hard':
+      setting.speed = 8;
+      setting.traffic = 2;
+      break;
+  }
+
   start.classList.add('hide');
   gameArea.innerHTML = '';
 
@@ -59,9 +96,10 @@ function startGame() {
     const enemy = document.createElement('div');
     const randomEnemy = Math.floor(Math.random() * MAX_ENEMY) + 1;
     enemy.classList.add('enemy');
-    enemy.y = -HEIGHT_ELEM * setting.traffic * (i + 1);
+    const periodEnemy = -HEIGHT_ELEM * setting.traffic * (i + 1);
+    enemy.y = periodEnemy < 100 ? -100 * setting.traffic * (i + 1) : periodEnemy;
     enemy.style.top = enemy.y + 'px';
-    enemy.style.background = `transparent url(image/enemy${randomEnemy}.png) center / cover no-repeat`;
+    enemy.style.background = `transparent url(image/enemy${randomEnemy}.png) center / contain no-repeat`;
     gameArea.appendChild(enemy);
     enemy.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - enemy.offsetWidth)) + 'px';
   }
@@ -78,6 +116,14 @@ function startGame() {
 }
 
 function playGame() {
+
+  setting.level = Math.floor(setting.score / 1000);
+
+  if (setting.level !== level) {
+    level = setting.level;
+    setting.speed++;
+  }
+
   if (setting.start) {
     audio.play();
     setting.score += setting.speed;
@@ -135,21 +181,26 @@ function moveEnemy() {
     let carRect = car.getBoundingClientRect();
     let enemyRect = item.getBoundingClientRect();
 
-    if (carRect.top + 2 <= enemyRect.bottom &&
-      carRect.right + 2 >= enemyRect.left &&
-      carRect.left + 2 <= enemyRect.right &&
-      carRect.bottom + 2 >= enemyRect.top) {
+    if (carRect.top <= enemyRect.bottom &&
+      carRect.right >= enemyRect.left &&
+      carRect.left <= enemyRect.right &&
+      carRect.bottom >= enemyRect.top) {
       setting.start = false;
       bam.play();
       start.classList.remove('hide');
       start.style.top = score.offsetHeight;
+      addLocalStorage();
     }
 
     item.y += setting.speed / 2;
     item.style.top = item.y + 'px';
 
     if (item.y >= gameArea.offsetHeight) {
-      item.y = -HEIGHT_ELEM * setting.traffic;
+      const checkTop = [...enemy].every(item => item.offsetTop > HEIGHT_ELEM);
+      if (checkTop) {
+        item.y = -HEIGHT_ELEM * setting.traffic;
+      }
+
       item.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - item.offsetWidth)) + 'px';
     }
   });
